@@ -512,11 +512,11 @@ dialog::backdrop {
                 <tr>
                   <th>順位</th>
                   <th>メンバー</th>
+                  <th>総合Pt</th>
                   <th>対局数</th>
                   <th>平均順位</th>
                   <th>トップ率</th>
                   <th>ラス率</th>
-                  <th>総合Pt</th>
                 </tr>
               </thead>
               <tbody id="rankingBody"></tbody>
@@ -799,11 +799,11 @@ function renderRanking(rows) {
         <tr class="${unplayed ? "unplayed-row" : ""}">
           <td class="rank-cell">${escapeHtml(row[0])}</td>
           <td class="member-cell">${escapeHtml(row[1])}</td>
+          <td class="number ${pointClass(point)}">${escapeHtml(row[6])}</td>
           <td class="number">${escapeHtml(row[2])}</td>
           <td class="number">${escapeHtml(row[3] || "-")}</td>
           <td class="number">${escapeHtml(row[4] || "-")}</td>
           <td class="number">${escapeHtml(row[5] || "-")}</td>
-          <td class="number ${pointClass(point)}">${escapeHtml(row[6])}</td>
         </tr>
       `;
     })
