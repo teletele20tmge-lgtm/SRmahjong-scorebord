@@ -9,7 +9,456 @@
     <meta name="apple-mobile-web-app-title" content="嶋津家麻雀成績表" />
     <title>嶋津家麻雀成績表</title>
     <link rel="apple-touch-icon" href="./assets/mahjong-mark.svg" />
-    <link rel="stylesheet" href="./styles.css" />
+    <style>
+:root {
+  --bg: #f5f7f4;
+  --ink: #15201d;
+  --muted: #63716b;
+  --line: #d9e0db;
+  --panel: #ffffff;
+  --panel-2: #eef3f0;
+  --green: #0f766e;
+  --green-dark: #115e59;
+  --blue: #2563eb;
+  --red: #b42318;
+  --gold: #b7791f;
+  --violet: #6d28d9;
+  --shadow: 0 12px 26px rgba(21, 32, 29, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(90deg, rgba(15, 118, 110, 0.055) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(37, 99, 235, 0.035) 1px, transparent 1px),
+    var(--bg);
+  background-size: 28px 28px;
+  color: var(--ink);
+  font-family:
+    "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 1px solid var(--green);
+  background: var(--green);
+  color: white;
+  min-height: 42px;
+  padding: 0 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.ghost-button {
+  background: white;
+  color: var(--green-dark);
+}
+
+.ghost-button.needs-setup {
+  border-color: var(--gold);
+  color: #7a520d;
+}
+
+.icon-button {
+  width: 42px;
+  padding: 0;
+}
+
+.shell {
+  width: min(1440px, 100%);
+  margin: 0 auto;
+  padding: max(14px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 12px;
+}
+
+.brand-mark {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
+}
+
+.brand-copy {
+  min-width: 0;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 21px;
+  line-height: 1.25;
+}
+
+.brand p,
+.section-title span,
+.summary span,
+.summary small {
+  color: var(--muted);
+}
+
+.brand p {
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.summary,
+.panel {
+  min-width: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.summary {
+  min-height: 108px;
+  padding: 15px;
+}
+
+.summary span,
+.summary small {
+  display: block;
+  font-size: 13px;
+}
+
+.summary strong {
+  display: block;
+  margin: 8px 0 4px;
+  overflow-wrap: anywhere;
+  font-size: 23px;
+  line-height: 1.2;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  min-width: 0;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+  min-width: 0;
+}
+
+.panel {
+  padding: 15px;
+}
+
+.section-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.section-title h2 {
+  font-size: 18px;
+}
+
+.section-title span {
+  flex: 0 0 auto;
+  font-size: 12px;
+}
+
+.table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+}
+
+table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  padding: 10px 9px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th:last-child,
+td:last-child {
+  border-right: 0;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--green);
+  color: white;
+  font-weight: 900;
+}
+
+tbody tr:nth-child(even) {
+  background: #fafbf9;
+}
+
+.unplayed-row {
+  color: var(--muted);
+}
+
+.rank-cell {
+  width: 52px;
+  text-align: center;
+  font-weight: 900;
+}
+
+.member-cell {
+  font-weight: 900;
+}
+
+.number {
+  font-variant-numeric: tabular-nums;
+}
+
+.positive {
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+.negative {
+  color: var(--red);
+  font-weight: 900;
+}
+
+.bars {
+  display: grid;
+  gap: 10px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr) 82px;
+  gap: 10px;
+  align-items: center;
+  min-height: 30px;
+}
+
+.bar-label,
+.bar-value {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.bar-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bar-track {
+  position: relative;
+  height: 14px;
+  overflow: hidden;
+  background: var(--panel-2);
+  border: 1px solid #dfe7e2;
+}
+
+.bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  min-width: 2px;
+  background: var(--blue);
+}
+
+.bar-fill.negative-fill {
+  right: 50%;
+  left: auto;
+  background: var(--red);
+}
+
+.bar-fill.positive-fill {
+  left: 50%;
+  background: var(--green);
+}
+
+.zero-line {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 50%;
+  width: 1px;
+  background: rgba(21, 32, 29, 0.34);
+}
+
+.danger .bar-fill {
+  background: var(--red);
+}
+
+.rank .bar-fill {
+  background: var(--gold);
+}
+
+.compact .bar-row {
+  grid-template-columns: 96px minmax(0, 1fr) 70px;
+}
+
+.empty {
+  padding: 28px 0;
+  color: var(--muted);
+  text-align: center;
+}
+
+dialog {
+  width: min(520px, calc(100% - 24px));
+  padding: 0;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+dialog::backdrop {
+  background: rgba(15, 23, 42, 0.34);
+}
+
+.settings-panel {
+  padding: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  font-weight: 800;
+}
+
+.field input {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  padding: 0 11px;
+  color: var(--ink);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+@media (max-width: 1080px) {
+  .layout,
+  .metrics-grid,
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .shell {
+    padding-inline: 10px;
+  }
+
+  .topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 42px 1fr;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+
+  .summary {
+    min-height: 92px;
+  }
+
+  .summary strong {
+    font-size: 21px;
+  }
+
+  .section-title {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .bar-row,
+  .compact .bar-row {
+    grid-template-columns: 86px minmax(0, 1fr) 62px;
+    gap: 8px;
+  }
+
+  .bar-label,
+  .bar-value {
+    font-size: 12px;
+  }
+}
+
+</style>
   </head>
   <body>
     <main class="shell">
@@ -119,6 +568,404 @@
       </form>
     </dialog>
 
-    <script src="./app.js"></script>
+    <script>
+const SHEET_ID = "1rYsmpHs5fjCF_UQtnp3WgMeGXWPMT2ggBRKY7QmOoM8";
+const SHEET_NAME = "グラフ";
+const DEFAULT_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc07xYSU8fmJPyYYzmY_gYbo4_qF5CqWNqilMOqcEMYbTC5sw/viewform";
+const FORM_URL_KEY = "mahjong-form-url";
+
+const HEADERS = {
+  ranking: ["順位", "メンバー", "対局数", "平均順位", "トップ率", "ラス率", "総合ポイント"],
+  topRate: ["メンバー", "トップ率"],
+  lastRate: ["メンバー", "ラス率"],
+  avgRank: ["メンバー", "平均順位"]
+};
+
+const FALLBACK = {
+  ranking: [
+    HEADERS.ranking,
+    ["1", "竹内", "69", "2.29", "36.2%", "24.6%", "418.0", "20,900"],
+    ["2", "じゅんや", "62", "2.37", "27.4%", "17.7%", "288.0", "14,400"],
+    ["3", "あやと", "62", "2.56", "29.0%", "27.4%", "137.0", "6,850"],
+    ["4", "嶋津", "22", "2.32", "31.8%", "18.2%", "94.0", "4,700"],
+    ["5", "吉田", "5", "2.20", "40.0%", "20.0%", "82.0", "4,100"],
+    ["6", "風間", "7", "2.29", "28.6%", "14.3%", "59.0", "2,950"],
+    ["7", "かける", "4", "2.25", "25.0%", "25.0%", "39.0", "1,950"],
+    ["8", "てるや", "58", "2.48", "25.9%", "20.7%", "12.0", "600"],
+    ["9", "プロ雀士彩", "12", "2.42", "25.0%", "25.0%", "-5.0", "-250"],
+    ["10", "重村", "2", "3.50", "0.0%", "50.0%", "-59.0", "-2,950"],
+    ["11", "足立", "57", "2.68", "26.3%", "29.8%", "-99.0", "-4,950"],
+    ["12", "アベ", "48", "2.52", "18.8%", "25.0%", "-166.0", "-8,300"],
+    ["13", "柳川", "22", "2.91", "9.1%", "27.3%", "-212.0", "-10,600"],
+    ["14", "種川", "30", "3.17", "16.7%", "50.0%", "-426.0", "-21,300"],
+    ["15", "渡辺", "0", "", "", "", "0.0", "0"],
+    ["16", "大木", "0", "", "", "", "0.0", "0"],
+    ["17", "梯上", "0", "", "", "", "0.0", "0"],
+    ["18", "アレン", "0", "", "", "", "0.0", "0"]
+  ],
+  topRate: [
+    HEADERS.topRate,
+    ["吉田", "40.0%"],
+    ["竹内", "36.2%"],
+    ["嶋津", "31.8%"],
+    ["あやと", "29.0%"],
+    ["風間", "28.6%"],
+    ["じゅんや", "27.4%"],
+    ["足立", "26.3%"],
+    ["てるや", "25.9%"],
+    ["かける", "25.0%"],
+    ["プロ雀士彩", "25.0%"],
+    ["アベ", "18.8%"],
+    ["種川", "16.7%"],
+    ["柳川", "9.1%"],
+    ["重村", "0.0%"],
+    ["渡辺", ""],
+    ["大木", ""],
+    ["梯上", ""],
+    ["アレン", ""]
+  ],
+  lastRate: [
+    HEADERS.lastRate,
+    ["種川", "50.0%"],
+    ["重村", "50.0%"],
+    ["足立", "29.8%"],
+    ["あやと", "27.4%"],
+    ["柳川", "27.3%"],
+    ["かける", "25.0%"],
+    ["プロ雀士彩", "25.0%"],
+    ["アベ", "25.0%"],
+    ["竹内", "24.6%"],
+    ["てるや", "20.7%"],
+    ["吉田", "20.0%"],
+    ["嶋津", "18.2%"],
+    ["じゅんや", "17.7%"],
+    ["風間", "14.3%"],
+    ["渡辺", ""],
+    ["大木", ""],
+    ["梯上", ""],
+    ["アレン", ""]
+  ],
+  avgRank: [
+    HEADERS.avgRank,
+    ["吉田", "2.20"],
+    ["かける", "2.25"],
+    ["風間", "2.29"],
+    ["竹内", "2.29"],
+    ["嶋津", "2.32"],
+    ["じゅんや", "2.37"],
+    ["プロ雀士彩", "2.42"],
+    ["てるや", "2.48"],
+    ["アベ", "2.52"],
+    ["あやと", "2.56"],
+    ["足立", "2.68"],
+    ["柳川", "2.91"],
+    ["種川", "3.17"],
+    ["重村", "3.50"]
+  ]
+};
+
+const RANGES = {
+  ranking: "A61:G79",
+  topRate: "A8:B26",
+  lastRate: "I8:J26",
+  avgRank: "I44:J62"
+};
+
+const state = {
+  data: cloneData(FALLBACK),
+  source: "fallback"
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  bindUi();
+  renderAll("保存済みデータを表示中");
+  loadLiveData(false);
+  registerServiceWorker();
+});
+
+function bindUi() {
+  byId("refreshButton").addEventListener("click", () => loadLiveData(true));
+  byId("formButton").addEventListener("click", openForm);
+  byId("settingsButton").addEventListener("click", openSettings);
+  byId("saveSettingsButton").addEventListener("click", saveSettings);
+  byId("formUrlInput").value = getFormUrl();
+  updateFormButton();
+}
+
+async function loadLiveData(isManual) {
+  setStatus(isManual ? "シートから更新中" : "シートの最新データを確認中");
+  const entries = await Promise.allSettled(
+    Object.entries(RANGES).map(async ([key, range]) => [key, await fetchSheetRange(key, range)])
+  );
+
+  let updated = 0;
+  for (const entry of entries) {
+    if (entry.status !== "fulfilled") continue;
+    const [key, rows] = entry.value;
+    if (rows.length > 1) {
+      state.data[key] = rows;
+      updated += 1;
+    }
+  }
+
+  state.source = updated ? "live" : "fallback";
+  const status = updated
+    ? `シートの最新データを表示中（${formatNow()}）`
+    : "保存済みデータを表示中。シート共有設定か通信状態を確認してな";
+  renderAll(status);
+}
+
+function fetchSheetRange(key, range) {
+  const callback = `sheetCallback_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+  const url = new URL(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq`);
+  url.searchParams.set("sheet", SHEET_NAME);
+  url.searchParams.set("range", range);
+  url.searchParams.set("tqx", `out:json;responseHandler:${callback}`);
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    const timer = window.setTimeout(cleanupReject, 10000);
+
+    window[callback] = response => {
+      cleanup();
+      if (!response || response.status === "error") {
+        reject(new Error("Sheet response error"));
+        return;
+      }
+      resolve(tableToRows(key, response.table));
+    };
+
+    script.onerror = cleanupReject;
+    script.src = url.toString();
+    document.head.appendChild(script);
+
+    function cleanupReject() {
+      cleanup();
+      reject(new Error("Sheet request failed"));
+    }
+
+    function cleanup() {
+      window.clearTimeout(timer);
+      delete window[callback];
+      script.remove();
+    }
+  });
+}
+
+function tableToRows(key, table) {
+  const header = HEADERS[key] || [];
+  const width = header.length || table?.cols?.length || 0;
+  const rows = [];
+
+  for (const row of table?.rows || []) {
+    const cells = row.c || [];
+    const values = Array.from({ length: width }, (_, index) => {
+      const cell = cells[index];
+      if (!cell) return "";
+      if (cell.f !== undefined) return String(cell.f);
+      if (cell.v !== undefined) return String(cell.v);
+      return "";
+    });
+    if (values.some(Boolean) && !isHeaderRow(values, header)) {
+      rows.push(values);
+    }
+  }
+
+  return [header, ...rows];
+}
+
+function isHeaderRow(row, header) {
+  if (!header.length) return false;
+  return header.every((value, index) => String(row[index] || "") === value);
+}
+
+function renderAll(statusText) {
+  renderRanking(state.data.ranking);
+  renderBars("topRateBars", metricRows(state.data.topRate, { includeEmpty: true }), { mode: "percent" });
+  renderBars("lastRateBars", metricRows(state.data.lastRate, { includeEmpty: true }), { mode: "percent" });
+  renderBars("avgRankBars", metricRows(state.data.avgRank), { mode: "rank" });
+  renderSummary();
+  setStatus(statusText);
+}
+
+function renderRanking(rows) {
+  const body = byId("rankingBody");
+  const dataRows = rows.slice(1).filter(row => row[1]);
+  body.innerHTML = dataRows
+    .map(row => {
+      const point = parseNumber(row[6]);
+      const unplayed = parseNumber(row[2]) === 0;
+      return `
+        <tr class="${unplayed ? "unplayed-row" : ""}">
+          <td class="rank-cell">${escapeHtml(row[0])}</td>
+          <td class="member-cell">${escapeHtml(row[1])}</td>
+          <td class="number">${escapeHtml(row[2])}</td>
+          <td class="number">${escapeHtml(row[3] || "-")}</td>
+          <td class="number">${escapeHtml(row[4] || "-")}</td>
+          <td class="number">${escapeHtml(row[5] || "-")}</td>
+          <td class="number ${pointClass(point)}">${escapeHtml(row[6])}</td>
+        </tr>
+      `;
+    })
+    .join("");
+}
+
+function renderBars(elementId, rows, options) {
+  const root = byId(elementId);
+  if (!rows.length) {
+    root.innerHTML = `<div class="empty">データなし</div>`;
+    return;
+  }
+
+  root.innerHTML = rows
+    .map(row => {
+      const value = options.mode === "percent" ? percentValue(row[1]) : parseNumber(row[1]);
+      const width = options.mode === "rank"
+        ? Math.max(0, Math.min(100, (value / 4) * 100))
+        : Math.max(0, Math.min(100, value * 100));
+      return barRow(row[0], displayMetric(row[1]), `<span class="bar-fill" style="width:${width}%"></span>`);
+    })
+    .join("");
+}
+
+function barRow(label, value, fillHtml) {
+  return `
+    <div class="bar-row">
+      <div class="bar-label" title="${escapeHtml(label)}">${escapeHtml(label)}</div>
+      <div class="bar-track">${fillHtml}</div>
+      <div class="bar-value number">${escapeHtml(value)}</div>
+    </div>
+  `;
+}
+
+function renderSummary() {
+  const ranking = state.data.ranking.slice(1).filter(row => row[1]);
+  const played = ranking.filter(row => parseNumber(row[2]) > 0);
+  const leader = played[0] || ranking[0];
+  const mostGames = [...played].sort((a, b) => parseNumber(b[2]) - parseNumber(a[2]))[0];
+  const bestTop = metricRows(state.data.topRate)[0];
+  const bestAvg = metricRows(state.data.avgRank)[0];
+
+  setText("leaderName", leader?.[1] || "-");
+  setText("leaderScore", leader ? `${leader[6]} pt` : "-");
+  setText("mostGamesName", mostGames?.[1] || "-");
+  setText("mostGamesCount", mostGames ? `${mostGames[2]} 半荘` : "-");
+  setText("bestTopName", bestTop?.[0] || "-");
+  setText("bestTopRate", bestTop?.[1] || "-");
+  setText("bestAvgName", bestAvg?.[0] || "-");
+  setText("bestAvgRank", bestAvg?.[1] || "-");
+}
+
+function metricRows(rows, options = {}) {
+  return rows.slice(1).filter(row => {
+    if (!row[0]) return false;
+    if (options.includeEmpty) return true;
+    return row[1] !== undefined && row[1] !== "";
+  });
+}
+
+function openForm() {
+  const url = getFormUrl();
+  if (!url) {
+    openSettings();
+    setStatus("GoogleフォームURLを入れると、ここから入力画面を開けるで");
+    return;
+  }
+  window.open(url, "_blank", "noopener");
+}
+
+function openSettings() {
+  const dialog = byId("settingsDialog");
+  byId("formUrlInput").value = getFormUrl();
+  if (dialog.showModal) {
+    dialog.showModal();
+  } else {
+    dialog.setAttribute("open", "");
+  }
+}
+
+function saveSettings() {
+  const value = byId("formUrlInput").value.trim();
+  if (value) {
+    localStorage.setItem(FORM_URL_KEY, value);
+  } else {
+    localStorage.removeItem(FORM_URL_KEY);
+  }
+  updateFormButton();
+  byId("settingsDialog").close?.();
+  setStatus(value ? "GoogleフォームURLを保存したで" : "GoogleフォームURLを空にしたで");
+}
+
+function getFormUrl() {
+  return localStorage.getItem(FORM_URL_KEY) || DEFAULT_FORM_URL;
+}
+
+function updateFormButton() {
+  const button = byId("formButton");
+  const hasUrl = Boolean(getFormUrl());
+  button.classList.toggle("needs-setup", !hasUrl);
+  button.title = hasUrl ? "Googleフォームを開く" : "設定からGoogleフォームURLを保存";
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+  navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+}
+
+function parseNumber(value) {
+  if (value === null || value === undefined || value === "") return NaN;
+  return Number(String(value).replace(/[% ,]/g, ""));
+}
+
+function percentValue(value) {
+  if (value === null || value === undefined || value === "") return 0;
+  const raw = String(value);
+  const number = parseNumber(raw);
+  if (!Number.isFinite(number)) return 0;
+  return raw.includes("%") || number > 1 ? number / 100 : number;
+}
+
+function displayMetric(value) {
+  return value === null || value === undefined || value === "" ? "未参加" : value;
+}
+
+function pointClass(value) {
+  if (!Number.isFinite(value) || value === 0) return "";
+  return value > 0 ? "positive" : "negative";
+}
+
+function formatNow() {
+  return new Intl.DateTimeFormat("ja-JP", {
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(new Date());
+}
+
+function cloneData(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function byId(id) {
+  return document.getElementById(id);
+}
+
+function setText(id, value) {
+  byId(id).textContent = value;
+}
+
+function setStatus(text) {
+  setText("dataStatus", text);
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+</script>
   </body>
 </html>
