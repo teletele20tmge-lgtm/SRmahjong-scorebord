@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f766e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="嶋津家麻雀成績表" />
+    <title>嶋津家麻雀成績表</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" href="./assets/mahjong-mark.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./assets/mahjong-mark.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <img src="./assets/mahjong-mark.svg" alt="" class="brand-mark" />
+          <div class="brand-copy">
+            <h1>嶋津家麻雀成績表</h1>
+            <p id="dataStatus">成績を読み込み中</p>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="formButton" class="ghost-button" type="button">フォーム</button>
+          <button id="settingsButton" class="ghost-button icon-button" type="button" aria-label="設定">⚙</button>
+          <button id="refreshButton" type="button">更新</button>
+        </div>
+      </header>
+
+      <section class="summary-grid" aria-label="サマリー">
+        <article class="summary">
+          <span>現在トップ</span>
+          <strong id="leaderName">-</strong>
+          <small id="leaderScore">-</small>
+        </article>
+        <article class="summary">
+          <span>最多対局</span>
+          <strong id="mostGamesName">-</strong>
+          <small id="mostGamesCount">-</small>
+        </article>
+        <article class="summary">
+          <span>最高トップ率</span>
+          <strong id="bestTopName">-</strong>
+          <small id="bestTopRate">-</small>
+        </article>
+        <article class="summary">
+          <span>最高平均順位</span>
+          <strong id="bestAvgName">-</strong>
+          <small id="bestAvgRank">-</small>
+        </article>
+      </section>
+
+      <section class="layout">
+        <section class="panel ranking-panel">
+          <div class="section-title">
+            <h2>総合順位</h2>
+            <span>フォーム回答から集計</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>順位</th>
+                  <th>メンバー</th>
+                  <th>対局数</th>
+                  <th>平均順位</th>
+                  <th>トップ率</th>
+                  <th>ラス率</th>
+                  <th>総合Pt</th>
+                </tr>
+              </thead>
+              <tbody id="rankingBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="metrics-grid">
+        <section class="panel">
+          <div class="section-title">
+            <h2>トップ率</h2>
+            <span>高い順</span>
+          </div>
+          <div id="topRateBars" class="bars compact"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <h2>ラス率</h2>
+            <span>高い順</span>
+          </div>
+          <div id="lastRateBars" class="bars compact danger"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <h2>平均順位</h2>
+            <span>1から4</span>
+          </div>
+          <div id="avgRankBars" class="bars compact rank"></div>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="settingsDialog">
+      <form method="dialog" class="settings-panel">
+        <div class="section-title">
+          <h2>設定</h2>
+          <button class="ghost-button icon-button" value="cancel" type="submit" aria-label="閉じる">×</button>
+        </div>
+        <label class="field">
+          <span>GoogleフォームURL</span>
+          <input id="formUrlInput" type="url" placeholder="https://docs.google.com/forms/..." />
+        </label>
+        <div class="dialog-actions">
+          <button id="saveSettingsButton" type="button">保存</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
