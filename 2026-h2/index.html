@@ -664,6 +664,13 @@ const FALLBACK = {
   ]
 };
 
+const CLEAN_START = {
+  ranking: [HEADERS.ranking],
+  topRate: [HEADERS.topRate],
+  lastRate: [HEADERS.lastRate],
+  avgRank: [HEADERS.avgRank]
+};
+
 const RANGES = {
   ranking: "A61:G79",
   topRate: "A8:B26",
@@ -672,13 +679,13 @@ const RANGES = {
 };
 
 const state = {
-  data: cloneData(FALLBACK),
+  data: cloneData(CLEAN_START),
   source: "fallback"
 };
 
 document.addEventListener("DOMContentLoaded", () => {
   bindUi();
-  renderAll("保存済みデータを表示中");
+  renderAll("まだ対局データがありません");
   loadLiveData(false);
   registerServiceWorker();
 });
@@ -711,7 +718,7 @@ async function loadLiveData(isManual) {
   state.source = updated ? "live" : "fallback";
   const status = updated
     ? `シートの最新データを表示中（${formatNow()}）`
-    : "保存済みデータを表示中。シート共有設定か通信状態を確認してな";
+    : "まだ対局データがありません";
   renderAll(status);
 }
 
