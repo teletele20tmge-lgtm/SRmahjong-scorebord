@@ -769,8 +769,8 @@ function tableToRows(key, table) {
     const values = Array.from({ length: width }, (_, index) => {
       const cell = cells[index];
       if (!cell) return "";
-      if (cell.f !== undefined) return String(cell.f);
-      if (cell.v !== undefined) return String(cell.v);
+      if (cell.f !== undefined && cell.f !== null) return String(cell.f);
+      if (cell.v !== undefined && cell.v !== null && typeof cell.v !== "object") return String(cell.v);
       return "";
     });
     if (values.some(Boolean) && !isHeaderRow(values, header)) {
@@ -848,7 +848,7 @@ function barRow(label, value, fillHtml) {
 function renderSummary() {
   const ranking = state.data.ranking.slice(1).filter(row => row[1]);
   const played = ranking.filter(row => parseNumber(row[2]) > 0);
-  const leader = played[0] || ranking[0];
+  const leader = played[0];
   const mostGames = [...played].sort((a, b) => parseNumber(b[2]) - parseNumber(a[2]))[0];
   const bestTop = metricRows(state.data.topRate)[0];
   const bestAvg = metricRows(state.data.avgRank)[0];
